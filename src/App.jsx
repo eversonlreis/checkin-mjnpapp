@@ -79,10 +79,10 @@ export default function App() {
   if (!isLoggedIn) return <LoginScreen loginInput={loginInput} setLoginInput={setLoginInput} handleLogin={handleLogin} />;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-violet-200 selection:text-violet-900 flex flex-col relative overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-200 selection:text-blue-900 flex flex-col relative overflow-x-hidden">
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-violet-400/15 rounded-full blur-[100px] mix-blend-multiply"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-fuchsia-400/15 rounded-full blur-[100px] mix-blend-multiply"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-blue-400/15 rounded-full blur-[100px] mix-blend-multiply"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-yellow-400/15 rounded-full blur-[100px] mix-blend-multiply"></div>
       </div>
 
       {toast.visible && (
@@ -105,7 +105,7 @@ export default function App() {
               </button>
             )}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-[14px] flex items-center justify-center text-white shadow-lg shadow-violet-500/30 transform -rotate-3 border border-white/20">
+              <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-[14px] flex items-center justify-center text-white shadow-lg shadow-blue-500/30 transform -rotate-3 border border-white/20">
                 <Ticket size={20} className="transform rotate-3" />
               </div>
               <div className="flex flex-col justify-center">
@@ -124,7 +124,7 @@ export default function App() {
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2.5 px-4 py-2 bg-white border border-slate-200 shadow-sm rounded-full text-sm font-bold text-slate-600">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-violet-100 to-fuchsia-100 text-violet-700 flex items-center justify-center text-xs font-black shadow-inner">
+              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-100 to-yellow-100 text-blue-700 flex items-center justify-center text-xs font-black shadow-inner">
                 {receptionistName.charAt(0).toUpperCase()}
               </span>
               {receptionistName}
@@ -151,8 +151,8 @@ function LoadingScreen() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <div className="flex flex-col items-center gap-5">
-        <div className="w-12 h-12 border-4 border-slate-200 border-t-violet-600 rounded-full animate-spin"></div>
-        <p className="text-violet-600 font-black tracking-widest text-xs uppercase animate-pulse">Conectando Nuvem...</p>
+        <div className="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+        <p className="text-blue-600 font-black tracking-widest text-xs uppercase animate-pulse">Conectando Nuvem...</p>
       </div>
     </div>
   );
@@ -161,21 +161,21 @@ function LoadingScreen() {
 function LoginScreen({ loginInput, setLoginInput, handleLogin }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-4 relative overflow-hidden">
-      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-violet-400/20 rounded-full blur-[100px] pointer-events-none"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-fuchsia-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-blue-400/20 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-yellow-400/20 rounded-full blur-[100px] pointer-events-none"></div>
 
       <div className="bg-white/80 backdrop-blur-2xl p-8 md:p-12 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white w-full max-w-md text-center relative z-10">
-        <div className="w-24 h-24 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-violet-500/30 transform -rotate-12 border border-white/20">
+        <div className="w-24 h-24 bg-gradient-to-tr from-blue-600 to-blue-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-xl shadow-blue-500/30 transform -rotate-12 border border-white/20">
           <Ticket size={40} className="text-white transform rotate-12" />
         </div>
-        <h1 className="text-3xl font-black text-slate-800 mb-3 tracking-tight">Check-in <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-fuchsia-500">Inteligente</span></h1>
+        <h1 className="text-3xl font-black text-slate-800 mb-3 tracking-tight">Check-in <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-yellow-600">Inteligente</span></h1>
         <p className="text-slate-500 text-sm mb-10 font-medium">Identifique-se para acessar o painel de programações.</p>
         
         <form onSubmit={handleLogin} className="space-y-5">
           <div className="text-left">
-            <input type="text" value={loginInput} onChange={(e) => setLoginInput(e.target.value)} placeholder="Ex: Recepção, Nome" className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 outline-none transition-all font-bold text-slate-800 placeholder:text-slate-300 bg-slate-50 focus:bg-white text-center text-lg" required />
+            <input type="text" value={loginInput} onChange={(e) => setLoginInput(e.target.value)} placeholder="Ex: Recepção, Nome" className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-800 placeholder:text-slate-300 bg-slate-50 focus:bg-white text-center text-lg" required />
           </div>
-          <button type="submit" className="w-full bg-slate-900 hover:bg-violet-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-violet-600/30 text-lg flex items-center justify-center gap-2">
+          <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-lg flex items-center justify-center gap-2">
             Acessar Sistema <ChevronRight size={20} />
           </button>
         </form>
@@ -240,27 +240,27 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
           <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-2">Painel de Eventos</h2>
           <p className="text-slate-500 font-medium">Selecione uma sala para iniciar o check-in ou crie uma nova.</p>
         </div>
-        <button onClick={openCreateModal} className="bg-slate-900 hover:bg-violet-600 text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-slate-900/10 hover:shadow-violet-600/30 active:scale-[0.98]">
+        <button onClick={openCreateModal} className="bg-slate-900 hover:bg-blue-600 text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 active:scale-[0.98]">
           <Plus size={20} /> Nova Programação
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map(evt => (
-          <div key={evt.id} className="relative group flex flex-col bg-white/80 backdrop-blur-xl border-2 border-slate-100 hover:border-violet-300 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-violet-500/15 rounded-[2.5rem] transition-all duration-300 overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-violet-400/10 to-transparent rounded-bl-full -z-10 group-hover:scale-125 transition-transform duration-500"></div>
+          <div key={evt.id} className="relative group flex flex-col bg-white/80 backdrop-blur-xl border-2 border-slate-100 hover:border-blue-300 shadow-xl shadow-slate-200/30 hover:shadow-2xl hover:shadow-blue-500/15 rounded-[2.5rem] transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-blue-400/10 to-transparent rounded-bl-full -z-10 group-hover:scale-125 transition-transform duration-500"></div>
             <div className="absolute top-5 right-5 flex items-center gap-2 z-20 opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity">
                <button onClick={(e) => openEditModal(evt, e)} className="bg-white/90 border border-slate-200 text-slate-500 hover:text-blue-600 hover:border-blue-200 p-2 rounded-xl shadow-sm transition-colors"><Pencil size={16} /></button>
                <button onClick={(e) => openDeleteModal(evt, e)} className="bg-white/90 border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 p-2 rounded-xl shadow-sm transition-colors"><Trash2 size={16} /></button>
             </div>
             <div onClick={() => onOpenEvent(evt)} className="p-7 flex-1 flex flex-col cursor-pointer active:scale-[0.98] transition-transform">
               <div className="flex items-start justify-between w-full mb-5">
-                <div className="bg-slate-50 text-slate-400 p-3.5 rounded-[1.25rem] group-hover:bg-violet-50 group-hover:text-violet-600 transition-colors shadow-sm"><CalendarDays size={24} /></div>
+                <div className="bg-slate-50 text-slate-400 p-3.5 rounded-[1.25rem] group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors shadow-sm"><CalendarDays size={24} /></div>
               </div>
-              <h3 className="font-black text-xl text-slate-800 leading-tight mb-8 line-clamp-2 group-hover:text-violet-700 transition-colors pr-12">{evt.name}</h3>
-              <div className="mt-auto w-full flex justify-between items-center bg-slate-50 border border-slate-100 px-5 py-3.5 rounded-2xl group-hover:bg-violet-50 group-hover:border-violet-100 transition-colors">
-                <span className="text-xs font-extrabold text-slate-500 flex items-center gap-2 group-hover:text-violet-600 transition-colors uppercase tracking-wider"><Clock size={14} /> {evt.date.split('-').reverse().join('/')}</span>
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-300 group-hover:text-violet-600 transition-colors"><ChevronRight size={16} /></div>
+              <h3 className="font-black text-xl text-slate-800 leading-tight mb-8 line-clamp-2 group-hover:text-blue-700 transition-colors pr-12">{evt.name}</h3>
+              <div className="mt-auto w-full flex justify-between items-center bg-slate-50 border border-slate-100 px-5 py-3.5 rounded-2xl group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                <span className="text-xs font-extrabold text-slate-500 flex items-center gap-2 group-hover:text-blue-600 transition-colors uppercase tracking-wider"><Clock size={14} /> {evt.date.split('-').reverse().join('/')}</span>
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shadow-sm text-slate-300 group-hover:text-blue-600 transition-colors"><ChevronRight size={16} /></div>
               </div>
             </div>
           </div>
@@ -277,19 +277,19 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
       {(isCreating || editingEvent) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 animate-in fade-in">
           <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200 border border-white">
-            <h3 className="text-2xl font-black text-slate-800 mb-6 tracking-tight flex items-center gap-2"><Sparkles className="text-violet-500" /> {editingEvent ? 'Editar Programação' : 'Criar Programação'}</h3>
+            <h3 className="text-2xl font-black text-slate-800 mb-6 tracking-tight flex items-center gap-2"><Sparkles className="text-blue-500" /> {editingEvent ? 'Editar Programação' : 'Criar Programação'}</h3>
             <form onSubmit={handleSaveEvent} className="space-y-5">
               <div>
                 <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Nome do Evento</label>
-                <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Ex: Culto de Domingo" className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required autoFocus />
+                <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Ex: Culto de Domingo" className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required autoFocus />
               </div>
               <div>
                 <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Data</label>
-                <input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required />
+                <input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required />
               </div>
               <div className="flex gap-3 pt-5">
                 <button type="button" onClick={() => { setIsCreating(false); setEditingEvent(null); }} className="flex-1 px-4 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-colors active:scale-95">Cancelar</button>
-                <button type="submit" className="flex-[2] px-4 py-4 bg-violet-600 text-white font-black rounded-2xl hover:bg-violet-700 transition-colors shadow-lg shadow-violet-600/30 active:scale-95">Salvar</button>
+                <button type="submit" className="flex-[2] px-4 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30 active:scale-95">Salvar</button>
               </div>
             </form>
           </div>
@@ -298,7 +298,7 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
 
       {deletingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in">
-          <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200 text-center">
+          <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-sm shadow-2xl animate-in zoom-in-95 duration-200 text-center">
             <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6"><AlertCircle size={40} /></div>
             <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Excluir Evento?</h3>
             <p className="text-slate-500 font-medium mb-8">Esta ação removerá "{deletingEvent.name}" do painel.</p>
@@ -457,14 +457,14 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="bg-white/90 backdrop-blur-md p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
-                    <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4"><div className="bg-violet-100 text-violet-600 p-3.5 rounded-2xl shadow-inner"><UserPlus size={24} /></div>Novo Registro</h2>
+                    <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4"><div className="bg-blue-100 text-blue-600 p-3.5 rounded-2xl shadow-inner"><UserPlus size={24} /></div>Novo Registro</h2>
                     <form onSubmit={handleAddVisitor} className="space-y-6">
-                      <div><input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-slate-100 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all bg-slate-50 focus:bg-white text-xl" placeholder="Nome completo..." required /></div>
+                      <div><input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all bg-slate-50 focus:bg-white text-xl" placeholder="Nome completo..." required /></div>
                       <div className="flex flex-col gap-4">
                         {config.enableClassification && (
                           <div className="relative animate-in fade-in slide-in-from-top-2 duration-300">
                             <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none"><Tag size={20} className="text-slate-400" /></div>
-                            <select value={classification} onChange={(e) => setClassification(e.target.value)} className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-violet-500 outline-none font-bold text-slate-700 bg-slate-50 focus:bg-white appearance-none cursor-pointer">
+                            <select value={classification} onChange={(e) => setClassification(e.target.value)} className="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 outline-none font-bold text-slate-700 bg-slate-50 focus:bg-white appearance-none cursor-pointer">
                               <option value="" disabled>Classificação de Público (Opcional)</option>
                               <option value="Jovem">Jovem</option>
                               <option value="Adolescente">Adolescente</option>
@@ -474,23 +474,23 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                           </div>
                         )}
                         <div className="flex items-center">
-                          <button type="button" onClick={() => setIsVisitor(!isVisitor)} className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl font-black text-sm transition-all duration-300 w-full sm:w-auto justify-center ${isVisitor ? 'bg-fuchsia-100 text-fuchsia-700 ring-2 ring-fuchsia-500 shadow-sm' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                          <button type="button" onClick={() => setIsVisitor(!isVisitor)} className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl font-black text-sm transition-all duration-300 w-full sm:w-auto justify-center ${isVisitor ? 'bg-yellow-100 text-yellow-700 ring-2 ring-yellow-500 shadow-sm' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
                              {isVisitor ? <CheckCircle2 size={18}/> : <div className="w-4 h-4 rounded-full border-2 border-slate-400"/>} Sou Visitante
                           </button>
                         </div>
                         {(config.requireWhatsApp || isVisitor) && (
                           <div className="animate-in fade-in slide-in-from-top-2 duration-300 relative">
-                            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none"><MessageCircle size={20} className={isVisitor ? "text-fuchsia-500" : "text-emerald-500"} /></div>
-                            <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className={`w-full pl-14 pr-6 py-4 rounded-2xl border-2 focus:ring-4 outline-none font-bold text-slate-800 transition-all ${isVisitor ? 'border-fuchsia-100 focus:border-fuchsia-500 focus:ring-fuchsia-500/10 bg-fuchsia-50 focus:bg-white placeholder:text-fuchsia-300' : 'border-slate-100 focus:border-emerald-500 focus:ring-emerald-500/10 bg-slate-50 focus:bg-white placeholder:text-slate-300'}`} placeholder="WhatsApp (DDD + Número)" required={config.requireWhatsApp || isVisitor} />
+                            <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none"><MessageCircle size={20} className={isVisitor ? "text-yellow-600" : "text-emerald-500"} /></div>
+                            <input type="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} className={`w-full pl-14 pr-6 py-4 rounded-2xl border-2 focus:ring-4 outline-none font-bold text-slate-800 transition-all ${isVisitor ? 'border-yellow-100 focus:border-yellow-500 focus:ring-yellow-500/10 bg-yellow-50 focus:bg-white placeholder:text-yellow-300' : 'border-slate-100 focus:border-emerald-500 focus:ring-emerald-500/10 bg-slate-50 focus:bg-white placeholder:text-slate-300'}`} placeholder="WhatsApp (DDD + Número)" required={config.requireWhatsApp || isVisitor} />
                           </div>
                         )}
                       </div>
                       <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 flex items-center gap-5">
-                        <div className="flex-1 flex items-center gap-4"><Clock size={28} className="text-slate-300" /><input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} disabled={isAutoTime} className={`w-full bg-transparent outline-none font-mono text-3xl font-black tracking-tighter ${isAutoTime ? 'text-slate-300 cursor-not-allowed' : 'text-violet-600'}`} required /></div>
+                        <div className="flex-1 flex items-center gap-4"><Clock size={28} className="text-slate-300" /><input type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} disabled={isAutoTime} className={`w-full bg-transparent outline-none font-mono text-3xl font-black tracking-tighter ${isAutoTime ? 'text-slate-300 cursor-not-allowed' : 'text-blue-600'}`} required /></div>
                         <div className="h-12 w-[2px] bg-slate-200 rounded-full"></div>
                         <div className="flex flex-col items-center"><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Auto</span><button type="button" onClick={() => setIsAutoTime(!isAutoTime)} className={`${isAutoTime ? 'bg-emerald-500' : 'bg-slate-300'} relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out shadow-inner`}><span className={`${isAutoTime ? 'translate-x-7' : 'translate-x-1'} inline-block h-6 w-6 mt-1 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out`} /></button></div>
                       </div>
-                      <button type="submit" className="w-full bg-slate-900 hover:bg-violet-600 text-white font-black py-5 rounded-3xl transition-all active:scale-[0.98] flex justify-center items-center gap-3 shadow-xl shadow-slate-900/10 hover:shadow-violet-600/30 text-xl mt-4"><CheckCircle2 size={24} /> Salvar Presença</button>
+                      <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-5 rounded-3xl transition-all active:scale-[0.98] flex justify-center items-center gap-3 shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-xl mt-4"><CheckCircle2 size={24} /> Salvar Presença</button>
                     </form>
                   </div>
                 </div>
@@ -510,7 +510,7 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                               <span className="text-xs text-slate-500 font-bold flex items-center gap-1.5 mt-1 uppercase tracking-wider"><Clock size={12} className="text-slate-300" /> {v.arrivalTime} <span className="text-slate-300">•</span> {v.registeredBy || 'Sis'}</span>
                               {(v.isVisitor || v.classification || v.whatsapp) && (
                                 <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                  {v.isVisitor && <span className="text-[9px] bg-fuchsia-100 text-fuchsia-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-fuchsia-200">Visitante</span>}
+                                  {v.isVisitor && <span className="text-[9px] bg-yellow-100 text-yellow-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-yellow-200">Visitante</span>}
                                   {v.classification && <span className="text-[9px] bg-blue-100 text-blue-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-blue-200">{v.classification}</span>}
                                   {v.whatsapp && <span className="text-[9px] bg-emerald-100 text-emerald-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest flex items-center gap-1 border border-emerald-200"><MessageCircle size={10}/> WP Salvo</span>}
                                 </div>
@@ -519,7 +519,7 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                           </div>
                           <div>
                             {v.hasWon ? <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full shadow-sm">Ganhou</span> : 
-                             v.weight > 0 ? <span className="text-[10px] font-black uppercase tracking-widest text-violet-700 bg-violet-100 border border-violet-200 px-3 py-1.5 rounded-full shadow-sm">{v.weight}x Chances</span> : 
+                             v.weight > 0 ? <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-full shadow-sm">{v.weight}x Chances</span> : 
                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">Geral</span>}
                           </div>
                         </div>
@@ -532,19 +532,19 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
 
             {activeTab === 'draw' && (
               <div className="space-y-8 max-w-4xl mx-auto">
-                <div className="bg-gradient-to-r from-violet-100 to-fuchsia-100 border border-white rounded-[2rem] p-6 flex flex-col md:flex-row items-center gap-5 shadow-xl shadow-violet-500/10">
-                  <div className="bg-white text-violet-600 p-4 rounded-2xl shadow-md shrink-0"><MonitorPlay size={28} /></div>
-                  <div className="text-center md:text-left"><h4 className="font-black text-violet-900 text-lg">Transmissão Ao Vivo Ativa</h4><p className="text-sm text-violet-800/80 font-bold mt-1">Inicie o sorteio abaixo. Todos os celulares e telões conectados verão a animação simultaneamente.</p></div>
+                <div className="bg-gradient-to-r from-blue-100 to-yellow-100 border border-white rounded-[2rem] p-6 flex flex-col md:flex-row items-center gap-5 shadow-xl shadow-blue-500/10">
+                  <div className="bg-white text-blue-600 p-4 rounded-2xl shadow-md shrink-0"><MonitorPlay size={28} /></div>
+                  <div className="text-center md:text-left"><h4 className="font-black text-blue-900 text-lg">Transmissão Ao Vivo Ativa</h4><p className="text-sm text-blue-800/80 font-bold mt-1">Inicie o sorteio abaixo. Todos os celulares e telões conectados verão a animação simultaneamente.</p></div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-white/90 backdrop-blur-xl p-8 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white flex flex-col items-center text-center group hover:scale-[1.02] transition-all duration-300">
-                    <div className="w-28 h-28 bg-gradient-to-tr from-violet-600 to-fuchsia-500 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-violet-500/30 transform group-hover:rotate-6 transition-transform border border-white/20"><Trophy size={48} className="text-white" /></div>
+                    <div className="w-28 h-28 bg-gradient-to-tr from-blue-600 to-yellow-600 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-blue-500/30 transform group-hover:rotate-6 transition-transform border border-white/20"><Trophy size={48} className="text-white" /></div>
                     <h2 className="text-3xl font-black text-slate-800 mb-3 tracking-tight">Pontualidade</h2>
                     <p className="text-slate-500 font-medium mb-10 text-sm px-4">Utiliza as regras de peso. Quem chegou cedo tem mais cartões na roleta.</p>
-                    <button onClick={() => runDraw('punctual')} className="w-full bg-slate-900 hover:bg-violet-600 text-white font-black py-5 rounded-2xl transition-all shadow-xl active:scale-95 text-lg flex items-center justify-center gap-2">Sortear Agora <Sparkles size={20} /></button>
+                    <button onClick={() => runDraw('punctual')} className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-5 rounded-2xl transition-all shadow-xl active:scale-95 text-lg flex items-center justify-center gap-2">Sortear Agora <Sparkles size={20} /></button>
                   </div>
                   <div className="bg-white/90 backdrop-blur-xl p-8 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white flex flex-col items-center text-center group hover:scale-[1.02] transition-all duration-300">
-                    <div className="w-28 h-28 bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-emerald-500/30 transform group-hover:-rotate-6 transition-transform border border-white/20"><Gift size={48} className="text-white" /></div>
+                    <div className="w-28 h-28 bg-gradient-to-tr from-emerald-400 to-blue-600 rounded-[2rem] flex items-center justify-center mb-8 shadow-xl shadow-emerald-500/30 transform group-hover:-rotate-6 transition-transform border border-white/20"><Gift size={48} className="text-white" /></div>
                     <h2 className="text-3xl font-black text-slate-800 mb-3 tracking-tight">Sorteio Geral</h2>
                     <p className="text-slate-500 font-medium mb-10 text-sm px-4">Ignora horários. Todos que não ganharam têm 1x chance igualitária.</p>
                     <button onClick={() => runDraw('general')} className="w-full bg-slate-900 hover:bg-emerald-500 text-white font-black py-5 rounded-2xl transition-all shadow-xl active:scale-95 text-lg flex items-center justify-center gap-2">Sortear Geral <Gift size={20} /></button>
@@ -556,7 +556,7 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                     <div className="space-y-4">
                       {winners.map((w, index) => (
                         <div key={w.id} className="flex items-center gap-5 p-5 rounded-3xl bg-white border-2 border-slate-100 hover:border-yellow-300 transition-colors shadow-sm">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-400 to-amber-300 text-yellow-900 font-black text-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 border border-white/50">#{winners.length - index}</div>
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-400 to-blue-300 text-blue-900 font-black text-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 border border-white/50">#{winners.length - index}</div>
                           <div className="flex-1"><h4 className="font-black text-xl text-slate-800">{w.name}</h4><p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2"><span className="bg-slate-100 px-2 py-0.5 rounded text-slate-500">{w.drawType === 'punctual' ? 'Pontualidade' : 'Geral'}</span><Clock size={12} /> {w.wonAt}</p></div>
                         </div>
                       ))}
@@ -572,17 +572,17 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                   <h3 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4 tracking-tight"><div className="bg-slate-100 text-slate-600 p-3.5 rounded-2xl shadow-inner"><Settings size={24} /></div>Regras & Parametrização</h3>
                   <div className="grid sm:grid-cols-2 gap-8">
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm">
-                      <div className="font-black text-slate-800 mb-6 flex items-center gap-3 text-lg"><span className="w-4 h-4 rounded-full bg-violet-500 shadow-[0_0_15px_rgba(139,92,246,0.6)] animate-pulse"></span> Super Pontual</div>
+                      <div className="font-black text-slate-800 mb-6 flex items-center gap-3 text-lg"><span className="w-4 h-4 rounded-full bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.6)] animate-pulse"></span> Super Pontual</div>
                       <div className="space-y-6">
-                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Horário Limite</label><input type="time" value={config.rule1Time} onChange={(e) => updateConfig('rule1Time', e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-violet-500 outline-none font-mono font-bold text-slate-700 bg-white text-xl" /></div>
-                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Chances no Sorteio</label><select value={config.rule1Weight} onChange={(e) => updateConfig('rule1Weight', Number(e.target.value))} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-violet-500 outline-none bg-white font-black text-slate-700 text-lg"><option value={1}>1x Chance</option><option value={2}>2x Chances</option><option value={3}>3x Chances</option><option value={5}>5x Chances</option></select></div>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Horário Limite</label><input type="time" value={config.rule1Time} onChange={(e) => updateConfig('rule1Time', e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-mono font-bold text-slate-700 bg-white text-xl" /></div>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Chances no Sorteio</label><select value={config.rule1Weight} onChange={(e) => updateConfig('rule1Weight', Number(e.target.value))} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none bg-white font-black text-slate-700 text-lg"><option value={1}>1x Chance</option><option value={2}>2x Chances</option><option value={3}>3x Chances</option><option value={5}>5x Chances</option></select></div>
                       </div>
                     </div>
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm">
                       <div className="font-black text-slate-800 mb-6 flex items-center gap-3 text-lg"><span className="w-4 h-4 rounded-full bg-slate-400 shadow-sm"></span> Tolerância</div>
                       <div className="space-y-6">
-                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Horário Limite</label><input type="time" value={config.rule2Time} onChange={(e) => updateConfig('rule2Time', e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-violet-500 outline-none font-mono font-bold text-slate-700 bg-white text-xl" /></div>
-                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Chances no Sorteio</label><select value={config.rule2Weight} onChange={(e) => updateConfig('rule2Weight', Number(e.target.value))} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-violet-500 outline-none bg-white font-black text-slate-700 text-lg"><option value={1}>1x Chance</option><option value={2}>2x Chances</option></select></div>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Horário Limite</label><input type="time" value={config.rule2Time} onChange={(e) => updateConfig('rule2Time', e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none font-mono font-bold text-slate-700 bg-white text-xl" /></div>
+                        <div><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2.5">Chances no Sorteio</label><select value={config.rule2Weight} onChange={(e) => updateConfig('rule2Weight', Number(e.target.value))} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 outline-none bg-white font-black text-slate-700 text-lg"><option value={1}>1x Chance</option><option value={2}>2x Chances</option></select></div>
                       </div>
                     </div>
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm sm:col-span-2">
@@ -599,7 +599,7 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                       </div>
                     </div>
                   </div>
-                  {event.isNew && <div className="mt-10"><button onClick={() => setActiveTab('checkin')} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-violet-600 transition-all text-lg active:scale-95">Salvar Regras e Iniciar 🚀</button></div>}
+                  {event.isNew && <div className="mt-10"><button onClick={() => setActiveTab('checkin')} className="w-full bg-slate-900 text-white font-black py-5 rounded-2xl shadow-xl hover:bg-blue-600 transition-all text-lg active:scale-95">Salvar Regras e Iniciar 🚀</button></div>}
                 </div>
 
                 <div className="bg-white/90 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
@@ -675,7 +675,7 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     const ctx = canvas.getContext('2d');
-    const colors = ['#8b5cf6', '#d946ef', '#10b981', '#fbbf24', '#3b82f6', '#ffffff'];
+    const colors = ['#003b91', '#0050c7', '#0ea5e9', '#ca8a04', '#1d4ed8', '#ffffff'];
     const pieces = Array.from({length: 250}).map(() => ({
       x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
       vx: (Math.random() - 0.5) * 15, vy: (Math.random() + 1) * 8,
@@ -701,7 +701,7 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
       <canvas id="confetti-canvas-vip" className="absolute inset-0 pointer-events-none z-[101]" />
       <div className="absolute top-12 left-0 right-0 text-center z-[102] animate-in slide-in-from-top-10 duration-700">
         <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md border border-white/20 mb-6 shadow-xl"><Sparkles size={16} className="text-yellow-400" />{drawState.drawType === 'punctual' ? 'Sorteio Pontualidade' : 'Sorteio Geral'}</div>
-        <h2 className={`text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-2xl transition-all duration-700 ${spinPhase === 'stopped' ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-amber-500 scale-110' : ''}`}>{spinPhase === 'spinning' ? 'SORTEANDO...' : 'VENCEDOR!'}</h2>
+        <h2 className={`text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-2xl transition-all duration-700 ${spinPhase === 'stopped' ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-500 scale-110' : ''}`}>{spinPhase === 'spinning' ? 'SORTEANDO...' : 'VENCEDOR!'}</h2>
       </div>
       <div className="relative w-full h-[500px] flex items-center z-[102] overflow-hidden mt-16">
         <div className="absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2 w-[18rem] bg-white/5 border-x-4 border-white/20 z-20 pointer-events-none rounded-[3rem] shadow-[0_0_100px_rgba(255,255,255,0.1)] flex flex-col justify-between py-6">
@@ -714,9 +714,9 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
               <div key={i} className="w-64 h-[22rem] flex-shrink-0 relative transition-all duration-500 transform" style={{ marginRight: '2rem' }}>
                 <div className={`w-full h-full rounded-[2.5rem] p-1.5 transition-all duration-700 ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-gradient-to-tr from-yellow-300 via-amber-400 to-yellow-500 shadow-[0_0_120px_rgba(251,191,36,0.5)] scale-110 z-50' : 'bg-white/10 border border-white/10 backdrop-blur-md opacity-40 scale-90'}`}>
                   <div className={`w-full h-full rounded-[2.2rem] flex flex-col items-center justify-center p-6 text-center shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-white' : 'bg-transparent'}`}>
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-amber-100 text-amber-600' : 'bg-white/10 text-white/50'}`}><UserCircle2 size={32} /></div>
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-blue-100 text-blue-600' : 'bg-white/10 text-white/50'}`}><UserCircle2 size={32} /></div>
                     <h3 className={`font-black leading-tight break-words w-full ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-slate-900 text-3xl md:text-4xl' : 'text-white text-2xl'}`}>{name}</h3>
-                    <div className="mt-auto pt-6 border-t-[3px] w-full border-dashed border-slate-300/30"><p className={`text-[10px] font-black uppercase tracking-widest ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-amber-500' : 'text-white/30'}`}>TICKET VIP EXCLUSIVO</p></div>
+                    <div className="mt-auto pt-6 border-t-[3px] w-full border-dashed border-slate-300/30"><p className={`text-[10px] font-black uppercase tracking-widest ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-yellow-500' : 'text-white/30'}`}>TICKET VIP EXCLUSIVO</p></div>
                   </div>
                 </div>
               </div>
