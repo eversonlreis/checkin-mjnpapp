@@ -160,7 +160,9 @@ function LoginScreen({ loginInput, setLoginInput, handleLogin }) {
           <div className="text-left">
             <input type="text" value={loginInput} onChange={(e) => setLoginInput(e.target.value)} placeholder="Ex: Recepção, Nome" className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-800 placeholder:text-slate-300 bg-slate-50 focus:bg-white text-center text-lg" required />
           </div>
-          <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-lg flex items-center justify-center gap-2">Acessar Sistema <ChevronRight size={20} /></button>
+          <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-lg flex items-center justify-center gap-2">
+            Acessar Sistema <ChevronRight size={20} />
+          </button>
         </form>
       </div>
     </div>
@@ -198,7 +200,6 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
     } else {
       const newEvent = { name: formName.trim(), date: formDate, createdAt: Date.now(), createdBy: user.uid, status: 'active' };
       const docRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'events'), newEvent);
-      // Incluído o novo parâmetro: enablePhoto
       const defaultSettings = { rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false, enablePhoto: false };
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'configs', `config_${docRef.id}`), defaultSettings);
       setIsCreating(false); showToast('Programação criada com sucesso!', 'success'); onOpenEvent({ id: docRef.id, ...newEvent, isNew: true });
@@ -278,7 +279,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   const [activeTab, setActiveTab] = useState(event.isNew ? 'settings' : 'checkin');
   const [visitors, setVisitors] = useState([]);
   const [winners, setWinners] = useState([]);
-  // Adicionado enablePhoto no state padrão
   const [config, setConfig] = useState({ rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false, enablePhoto: false });
   const [drawState, setDrawState] = useState({ isDrawing: false, winner: null, drawType: null });
 
@@ -288,8 +288,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   const [isVisitor, setIsVisitor] = useState(false);
   const [whatsapp, setWhatsapp] = useState('');
   const [classification, setClassification] = useState('');
-  
-  // NOVO: Estado para armazenar a foto capturada
   const [photoBase64, setPhotoBase64] = useState(null);
 
   useEffect(() => {
@@ -320,26 +318,20 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
 
   const timeToMinutes = (t) => { if(!t)return 0; const [h,m]=t.split(':').map(Number); return h*60+m; };
 
-  // --- ENGINE DE COMPRESSÃO DE FOTO ---
   const handlePhotoCapture = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
       img.onload = () => {
-        // Redimensiona a foto para 250px de largura para ficar MUITO LEVE no banco de dados
         const canvas = document.createElement('canvas');
         const MAX_WIDTH = 250;
         const scaleSize = MAX_WIDTH / img.width;
         canvas.width = MAX_WIDTH;
         canvas.height = img.height * scaleSize;
-        
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        
-        // Converte para JPEG otimizado
         const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
         setPhotoBase64(compressedBase64);
       };
@@ -369,7 +361,7 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
       name: newName.trim(), arrivalTime: finalTime, weight: weight, hasWon: false,
       timestamp: new Date().toISOString(), registeredBy: receptionistName, registeredById: user.uid,
       isVisitor: isVisitor, whatsapp: needsWhatsapp ? whatsapp.trim() : '', classification: config.enableClassification ? classification : '',
-      photo: photoBase64 // Salva a foto se houver
+      photo: photoBase64
     };
 
     setNewName(''); setIsVisitor(false); setWhatsapp(''); setClassification(''); setPhotoBase64(null);
@@ -447,26 +439,19 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
           </div>
 
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-            {/* ================================================== */}
-            {/* ABA 1: CHECK-IN */}
-            {/* ================================================== */}
             {activeTab === 'checkin' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="bg-white/90 backdrop-blur-md p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
                     <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4"><div className="bg-blue-100 text-blue-600 p-3.5 rounded-2xl shadow-inner"><UserPlus size={24} /></div>Novo Registro</h2>
                     <form onSubmit={handleAddVisitor} className="space-y-6">
-                      
-                      {/* FOTO E NOME */}
                       <div className="flex items-center gap-4">
                         {config.enablePhoto && (
                           <div className="relative shrink-0">
                             {photoBase64 ? (
                               <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-md group">
                                 <img src={photoBase64} alt="Foto" className="w-full h-full object-cover" />
-                                <button type="button" onClick={() => setPhotoBase64(null)} className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <X size={24} className="text-white" />
-                                </button>
+                                <button type="button" onClick={() => setPhotoBase64(null)} className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><X size={24} className="text-white" /></button>
                               </div>
                             ) : (
                               <label className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-blue-50 border-2 border-dashed border-blue-200 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-all text-blue-500">
@@ -478,7 +463,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                         )}
                         <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full flex-1 px-6 py-5 rounded-3xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all bg-slate-50 focus:bg-white text-xl" placeholder="Nome completo..." required />
                       </div>
-
                       <div className="flex flex-col gap-4">
                         {config.enableClassification && (
                           <div className="relative animate-in fade-in slide-in-from-top-2 duration-300">
@@ -523,15 +507,10 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                       {visitors.map(v => (
                         <div key={v.id} className={`flex items-center justify-between p-4 rounded-3xl border-2 transition-all hover:scale-[1.01] ${v.hasWon ? 'bg-emerald-50/50 border-emerald-100' : 'bg-white border-slate-50 hover:border-slate-100 hover:shadow-sm'}`}>
                           <div className="flex items-center gap-4">
-                            {/* Renderiza foto ou inicial */}
                             {v.photo ? (
-                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm overflow-hidden border-2 ${v.hasWon ? 'border-emerald-300' : 'border-slate-200'}`}>
-                                <img src={v.photo} alt={v.name} className="w-full h-full object-cover" />
-                              </div>
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm overflow-hidden border-2 ${v.hasWon ? 'border-emerald-300' : 'border-slate-200'}`}><img src={v.photo} alt={v.name} className="w-full h-full object-cover" /></div>
                             ) : (
-                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm ${v.hasWon ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
-                                {v.name.charAt(0).toUpperCase()}
-                              </div>
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm ${v.hasWon ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{v.name.charAt(0).toUpperCase()}</div>
                             )}
                             <div className="flex flex-col">
                               <span className="font-black text-slate-800 text-base flex items-center gap-2">{v.name} {v.hasWon && <Trophy size={16} className="text-emerald-500" />}</span>
@@ -558,9 +537,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
               </div>
             )}
 
-            {/* ================================================== */}
-            {/* ABA 2: SORTEIOS */}
-            {/* ================================================== */}
             {activeTab === 'draw' && (
               <div className="space-y-8 max-w-4xl mx-auto">
                 <div className="bg-gradient-to-r from-blue-100 to-yellow-100 border border-white rounded-[2rem] p-6 flex flex-col md:flex-row items-center gap-5 shadow-xl shadow-blue-500/10">
@@ -599,9 +575,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
               </div>
             )}
 
-            {/* ================================================== */}
-            {/* ABA 3: AJUSTES E RELATÓRIOS */}
-            {/* ================================================== */}
             {activeTab === 'settings' && (
               <div className="space-y-8 max-w-3xl mx-auto">
                 <div className="bg-white/90 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
@@ -624,7 +597,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm sm:col-span-2">
                       <div className="font-black text-slate-800 mb-6 flex items-center gap-3 text-lg"><span className="w-4 h-4 rounded-full bg-emerald-400 shadow-sm"></span> Campos e Formulário</div>
                       <div className="grid sm:grid-cols-2 gap-6">
-                        {/* NOVO: Habilitar Foto */}
                         <div className="flex items-center justify-between bg-white p-5 rounded-2xl border border-slate-100 shadow-sm sm:col-span-2">
                           <div className="flex items-center gap-3">
                             <div className="bg-blue-50 text-blue-500 p-2 rounded-xl"><ImageIcon size={20} /></div>
@@ -671,21 +643,22 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   );
 }
 
-// --- CARROSSEL VIP COM FOTO ---
+// ==========================================
+// TELA 4: MOTOR DE ANIMAÇÃO VIP (ALINHAMENTO PREMIUM CORRIGIDO)
+// ==========================================
 function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventId }) {
   const [spinPhase, setSpinPhase] = useState('spinning');
   const trackRef = useRef(null);
   
+  const winnerName = drawState.winner?.name || 'Visitante';
   const slotCount = 45; 
   
-  // Agora o slotItems armazena o Objeto Inteiro (para termos nome e foto)
   const slotItems = useMemo(() => {
     let items = [];
     const pool = visitors.length > 0 ? visitors : [{ name: 'Sorteado', photo: null }];
     for(let i=0; i < slotCount - 1; i++) {
       items.push(pool[Math.floor(Math.random() * pool.length)]);
     }
-    // O último item é o vencedor de fato (com a foto dele do BD)
     items.push(drawState.winner || { name: 'Visitante', photo: null }); 
     return items;
   }, [drawState.winner, visitors]);
@@ -747,33 +720,75 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-2xl flex flex-col items-center justify-center overflow-hidden">
       <canvas id="confetti-canvas-vip" className="absolute inset-0 pointer-events-none z-[101]" />
+      
       <div className="absolute top-12 left-0 right-0 text-center z-[102] animate-in slide-in-from-top-10 duration-700">
         <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md border border-white/20 mb-6 shadow-xl"><Sparkles size={16} className="text-yellow-400" />{drawState.drawType === 'punctual' ? 'Sorteio Pontualidade' : 'Sorteio Geral'}</div>
         <h2 className={`text-5xl md:text-7xl font-black text-white tracking-tight drop-shadow-2xl transition-all duration-700 ${spinPhase === 'stopped' ? 'text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-blue-500 scale-110' : ''}`}>{spinPhase === 'spinning' ? 'SORTEANDO...' : 'VENCEDOR!'}</h2>
       </div>
+
       <div className="relative w-full h-[500px] flex items-center z-[102] overflow-hidden mt-16">
         <div className="absolute top-0 bottom-0 left-1/2 transform -translate-x-1/2 w-[18rem] bg-white/5 border-x-4 border-white/20 z-20 pointer-events-none rounded-[3rem] shadow-[0_0_100px_rgba(255,255,255,0.1)] flex flex-col justify-between py-6">
            <div className="w-20 h-1.5 bg-white/50 mx-auto rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
            <div className="w-20 h-1.5 bg-white/50 mx-auto rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"></div>
         </div>
+        
         <div className="absolute left-1/2 z-10 w-full">
           <div ref={trackRef} className="flex items-center will-change-transform" style={{ marginLeft: '-9rem' }}>
             {slotItems.map((person, i) => (
-              <div key={i} className="w-64 h-[22rem] flex-shrink-0 relative transition-all duration-500 transform" style={{ marginRight: '2rem' }}>
-                <div className={`w-full h-full rounded-[2.5rem] p-1.5 transition-all duration-700 ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-gradient-to-tr from-yellow-300 via-amber-400 to-yellow-500 shadow-[0_0_120px_rgba(251,191,36,0.5)] scale-110 z-50' : 'bg-white/10 border border-white/10 backdrop-blur-md opacity-40 scale-90'}`}>
-                  <div className={`w-full h-full rounded-[2.2rem] flex flex-col items-center justify-center p-6 text-center shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-white' : 'bg-transparent'}`}>
+              <div key={i} className="w-64 h-[24rem] flex-shrink-0 relative transition-all duration-500 transform" style={{ marginRight: '2rem' }}>
+                
+                <div className={`w-full h-full rounded-[2.5rem] p-2 transition-all duration-700 ${
+                  i === slotCount - 1 && spinPhase === 'stopped'
+                    ? 'bg-gradient-to-tr from-yellow-300 via-amber-400 to-yellow-500 shadow-[0_0_120px_rgba(251,191,36,0.5)] scale-110 z-50'
+                    : 'bg-white/10 border border-white/10 backdrop-blur-md opacity-40 scale-90'
+                }`}>
+                  <div className={`w-full h-full rounded-[2.2rem] flex flex-col p-6 text-center shadow-inner relative overflow-hidden ${
+                    i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-white' : 'bg-transparent'
+                  }`}>
                     
-                    {/* Renderiza a Foto ou Ícone */}
-                    <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-inner overflow-hidden border-4 ${i === slotCount - 1 && spinPhase === 'stopped' ? 'border-yellow-400 bg-amber-100 text-amber-600' : 'border-white/20 bg-white/10 text-white/50'}`}>
-                      {person.photo ? (
-                        <img src={person.photo} alt="Membro" className="w-full h-full object-cover" />
-                      ) : (
-                        <UserCircle2 size={40} />
+                    {/* CONTEÚDO CENTRALIZADO (FOTO + NOME) */}
+                    <div className="flex-1 flex flex-col items-center justify-center w-full mt-2">
+                      <div className={`w-28 h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center mb-6 shadow-xl overflow-hidden border-4 transition-all duration-500 ${
+                        i === slotCount - 1 && spinPhase === 'stopped' ? 'border-yellow-400 bg-amber-50 text-amber-600' : 'border-white/20 bg-white/10 text-white/50'
+                      }`}>
+                        {person.photo ? (
+                          <img src={person.photo} alt="Membro" className="w-full h-full object-cover" />
+                        ) : (
+                          <UserCircle2 size={48} strokeWidth={1.5} />
+                        )}
+                      </div>
+                      
+                      <h3 className={`font-black leading-tight break-words w-full px-2 ${
+                        i === slotCount - 1 && spinPhase === 'stopped' ? 'text-slate-900 text-3xl' : 'text-white text-2xl'
+                      }`}>
+                        {person.name}
+                      </h3>
+                      
+                      {i === slotCount - 1 && spinPhase === 'stopped' && (
+                        <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mt-3">
+                          Membro Sorteado
+                        </p>
                       )}
                     </div>
                     
-                    <h3 className={`font-black leading-tight break-words w-full ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-slate-900 text-3xl md:text-4xl' : 'text-white text-2xl'}`}>{person.name}</h3>
-                    <div className="mt-auto pt-6 border-t-[3px] w-full border-dashed border-slate-300/30"><p className={`text-[10px] font-black uppercase tracking-widest ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-yellow-500' : 'text-white/30'}`}>TICKET VIP EXCLUSIVO</p></div>
+                    {/* TICKET RODAPÉ (COM FURINHOS E LINHA TRACEJADA) */}
+                    <div className={`mt-4 pt-5 border-t-[3px] w-full border-dashed relative ${
+                      i === slotCount - 1 && spinPhase === 'stopped' ? 'border-slate-200' : 'border-white/20'
+                    }`}>
+                      {/* Efeito visual de picote de ingresso nas laterais */}
+                      {i === slotCount - 1 && spinPhase === 'stopped' && (
+                        <>
+                          <div className="absolute -left-9 -top-[14px] w-6 h-6 bg-amber-400 rounded-full shadow-inner"></div>
+                          <div className="absolute -right-9 -top-[14px] w-6 h-6 bg-yellow-400 rounded-full shadow-inner"></div>
+                        </>
+                      )}
+                      <p className={`text-[11px] font-black uppercase tracking-widest ${
+                        i === slotCount - 1 && spinPhase === 'stopped' ? 'text-yellow-500' : 'text-white/30'
+                      }`}>
+                        TICKET VIP EXCLUSIVO
+                      </p>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -781,11 +796,15 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
           </div>
         </div>
       </div>
+      
       <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-slate-950 to-transparent z-[101] pointer-events-none"></div>
       <div className="absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-slate-950 to-transparent z-[101] pointer-events-none"></div>
+
       {spinPhase === 'stopped' && (
         <div className="absolute bottom-12 z-[102] animate-in slide-in-from-bottom-12 fade-in duration-700">
-          <div className="bg-white text-slate-900 px-8 py-5 rounded-full font-black text-xl shadow-[0_30px_60px_rgba(0,0,0,0.4)] flex items-center gap-4"><CheckCircle2 size={28} className="text-emerald-500" /> Sorteio Realizado!</div>
+          <div className="bg-white text-slate-900 px-8 py-5 rounded-full font-black text-xl shadow-[0_30px_60px_rgba(0,0,0,0.4)] flex items-center gap-4">
+            <CheckCircle2 size={28} className="text-emerald-500" /> Sorteio Realizado!
+          </div>
         </div>
       )}
     </div>
