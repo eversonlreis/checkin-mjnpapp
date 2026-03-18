@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Clock, Users, Gift, Settings, UserPlus, Trophy, CheckCircle2, AlertCircle, MonitorPlay, LogOut, Plus, CalendarDays, ChevronLeft, Download, FileSpreadsheet, LayoutDashboard, Search, ChevronRight, Sparkles, Ticket, Pencil, Trash2, X, UserCircle2, MessageCircle, Tag } from 'lucide-react';
+import { Clock, Users, Gift, Settings, UserPlus, Trophy, CheckCircle2, AlertCircle, MonitorPlay, LogOut, Plus, CalendarDays, ChevronLeft, Download, FileSpreadsheet, LayoutDashboard, Search, ChevronRight, Sparkles, Ticket, Pencil, Trash2, X, UserCircle2, MessageCircle, Tag, Camera, Image as ImageIcon } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
@@ -18,7 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = 'checkin-mjnpapp-v10'; // Identificador interno das coleções
+const appId = 'checkin-mjnpapp-v11'; 
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -37,11 +37,7 @@ export default function App() {
 
   useEffect(() => {
     const initAuth = async () => {
-      try {
-        await signInAnonymously(auth);
-      } catch (error) {
-        console.error("Erro na autenticação:", error);
-      }
+      try { await signInAnonymously(auth); } catch (error) { console.error("Erro auth:", error); }
     };
     initAuth();
     
@@ -50,7 +46,7 @@ export default function App() {
       setIsAppReady(true);
     });
 
-    const savedName = localStorage.getItem('checkin_v10_receptionist');
+    const savedName = localStorage.getItem('checkin_v11_receptionist');
     if (savedName) {
       setReceptionistName(savedName);
       setIsLoggedIn(true);
@@ -62,14 +58,14 @@ export default function App() {
     e.preventDefault();
     if (!loginInput.trim()) return;
     setReceptionistName(loginInput.trim());
-    localStorage.setItem('checkin_v10_receptionist', loginInput.trim());
+    localStorage.setItem('checkin_v11_receptionist', loginInput.trim());
     setIsLoggedIn(true);
     setViewMode('events_dashboard');
     showToast(`Bem-vindo(a), ${loginInput.trim()}!`, 'success');
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('checkin_v10_receptionist');
+    localStorage.removeItem('checkin_v11_receptionist');
     setReceptionistName('');
     setIsLoggedIn(false);
     setCurrentEvent(null);
@@ -113,10 +109,7 @@ export default function App() {
                   {viewMode === 'workspace' && currentEvent ? currentEvent.name : 'Nuvem'}
                 </h1>
                 <div className="flex items-center gap-1.5 mt-1.5">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
+                  <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
                   <p className="text-slate-500 text-[10px] font-extrabold uppercase tracking-widest leading-none">Conectado</p>
                 </div>
               </div>
@@ -124,24 +117,16 @@ export default function App() {
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden md:flex items-center gap-2.5 px-4 py-2 bg-white border border-slate-200 shadow-sm rounded-full text-sm font-bold text-slate-600">
-              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-100 to-yellow-100 text-blue-700 flex items-center justify-center text-xs font-black shadow-inner">
-                {receptionistName.charAt(0).toUpperCase()}
-              </span>
+              <span className="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-100 to-yellow-100 text-blue-700 flex items-center justify-center text-xs font-black shadow-inner">{receptionistName.charAt(0).toUpperCase()}</span>
               {receptionistName}
             </div>
-            <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 bg-white border border-slate-200 shadow-sm hover:bg-red-50 hover:border-red-200 p-2.5 rounded-full transition-all active:scale-95">
-              <LogOut size={18} />
-            </button>
+            <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 bg-white border border-slate-200 shadow-sm hover:bg-red-50 hover:border-red-200 p-2.5 rounded-full transition-all active:scale-95"><LogOut size={18} /></button>
           </div>
         </div>
       </header>
 
       <div className="flex-1 flex flex-col w-full h-full relative z-10">
-        {viewMode === 'events_dashboard' ? (
-          <EventsDashboard user={user} db={db} appId={appId} onOpenEvent={(evt) => { setCurrentEvent(evt); setViewMode('workspace'); }} showToast={showToast} />
-        ) : (
-          <EventWorkspace user={user} db={db} appId={appId} event={currentEvent} receptionistName={receptionistName} showToast={showToast} />
-        )}
+        {viewMode === 'events_dashboard' ? <EventsDashboard user={user} db={db} appId={appId} onOpenEvent={(evt) => { setCurrentEvent(evt); setViewMode('workspace'); }} showToast={showToast} /> : <EventWorkspace user={user} db={db} appId={appId} event={currentEvent} receptionistName={receptionistName} showToast={showToast} />}
       </div>
     </div>
   );
@@ -175,9 +160,7 @@ function LoginScreen({ loginInput, setLoginInput, handleLogin }) {
           <div className="text-left">
             <input type="text" value={loginInput} onChange={(e) => setLoginInput(e.target.value)} placeholder="Ex: Recepção, Nome" className="w-full px-6 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all font-bold text-slate-800 placeholder:text-slate-300 bg-slate-50 focus:bg-white text-center text-lg" required />
           </div>
-          <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-lg flex items-center justify-center gap-2">
-            Acessar Sistema <ChevronRight size={20} />
-          </button>
+          <button type="submit" className="w-full bg-slate-900 hover:bg-blue-600 text-white font-black py-4 px-4 rounded-2xl transition-all active:scale-[0.98] shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 text-lg flex items-center justify-center gap-2">Acessar Sistema <ChevronRight size={20} /></button>
         </form>
       </div>
     </div>
@@ -196,9 +179,7 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
     if (!user) return;
     const q = collection(db, 'artifacts', appId, 'public', 'data', 'events');
     const unsub = onSnapshot(q, (snap) => {
-      const evts = [];
-      snap.forEach(d => evts.push({ id: d.id, ...d.data() }));
-      setEvents(evts.sort((a, b) => b.createdAt - a.createdAt));
+      const evts = []; snap.forEach(d => evts.push({ id: d.id, ...d.data() })); setEvents(evts.sort((a, b) => b.createdAt - a.createdAt));
     });
     return () => unsub();
   }, [user]);
@@ -213,36 +194,28 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
 
     if (editingEvent) {
       await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'events', editingEvent.id), { name: formName.trim(), date: formDate });
-      setEditingEvent(null);
-      showToast('Programação atualizada com sucesso!', 'success');
+      setEditingEvent(null); showToast('Programação atualizada com sucesso!', 'success');
     } else {
       const newEvent = { name: formName.trim(), date: formDate, createdAt: Date.now(), createdBy: user.uid, status: 'active' };
       const docRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'events'), newEvent);
-      const defaultSettings = { rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false };
+      // Incluído o novo parâmetro: enablePhoto
+      const defaultSettings = { rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false, enablePhoto: false };
       await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'configs', `config_${docRef.id}`), defaultSettings);
-      setIsCreating(false);
-      showToast('Programação criada com sucesso!', 'success');
-      onOpenEvent({ id: docRef.id, ...newEvent, isNew: true });
+      setIsCreating(false); showToast('Programação criada com sucesso!', 'success'); onOpenEvent({ id: docRef.id, ...newEvent, isNew: true });
     }
   };
 
   const confirmDelete = async () => {
     if(!deletingEvent) return;
     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'events', deletingEvent.id));
-    setDeletingEvent(null);
-    showToast('Programação removida.', 'success');
+    setDeletingEvent(null); showToast('Programação removida.', 'success');
   };
 
   return (
     <div className="flex-1 p-6 md:p-10 max-w-6xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-        <div>
-          <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-2">Painel de Eventos</h2>
-          <p className="text-slate-500 font-medium">Selecione uma sala para iniciar o check-in ou crie uma nova.</p>
-        </div>
-        <button onClick={openCreateModal} className="bg-slate-900 hover:bg-blue-600 text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 active:scale-[0.98]">
-          <Plus size={20} /> Nova Programação
-        </button>
+        <div><h2 className="text-3xl font-black text-slate-800 tracking-tight mb-2">Painel de Eventos</h2><p className="text-slate-500 font-medium">Selecione uma sala para iniciar o check-in ou crie uma nova.</p></div>
+        <button onClick={openCreateModal} className="bg-slate-900 hover:bg-blue-600 text-white font-extrabold py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-slate-900/10 hover:shadow-blue-600/30 active:scale-[0.98]"><Plus size={20} /> Nova Programação</button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -254,9 +227,7 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
                <button onClick={(e) => openDeleteModal(evt, e)} className="bg-white/90 border border-slate-200 text-slate-500 hover:text-red-600 hover:border-red-200 p-2 rounded-xl shadow-sm transition-colors"><Trash2 size={16} /></button>
             </div>
             <div onClick={() => onOpenEvent(evt)} className="p-7 flex-1 flex flex-col cursor-pointer active:scale-[0.98] transition-transform">
-              <div className="flex items-start justify-between w-full mb-5">
-                <div className="bg-slate-50 text-slate-400 p-3.5 rounded-[1.25rem] group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors shadow-sm"><CalendarDays size={24} /></div>
-              </div>
+              <div className="flex items-start justify-between w-full mb-5"><div className="bg-slate-50 text-slate-400 p-3.5 rounded-[1.25rem] group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors shadow-sm"><CalendarDays size={24} /></div></div>
               <h3 className="font-black text-xl text-slate-800 leading-tight mb-8 line-clamp-2 group-hover:text-blue-700 transition-colors pr-12">{evt.name}</h3>
               <div className="mt-auto w-full flex justify-between items-center bg-slate-50 border border-slate-100 px-5 py-3.5 rounded-2xl group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
                 <span className="text-xs font-extrabold text-slate-500 flex items-center gap-2 group-hover:text-blue-600 transition-colors uppercase tracking-wider"><Clock size={14} /> {evt.date.split('-').reverse().join('/')}</span>
@@ -266,11 +237,7 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
           </div>
         ))}
         {events.length === 0 && !isCreating && !editingEvent && (
-          <div className="col-span-full py-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem] bg-slate-50/50 backdrop-blur-sm">
-            <div className="w-20 h-20 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto mb-5"><LayoutDashboard size={32} className="text-slate-300" /></div>
-            <p className="text-slate-700 font-black text-xl">Nenhuma programação encontrada.</p>
-            <p className="text-slate-500 font-medium mt-2">Clique em "Nova Programação" para começar.</p>
-          </div>
+          <div className="col-span-full py-24 text-center border-2 border-dashed border-slate-200 rounded-[3rem] bg-slate-50/50 backdrop-blur-sm"><div className="w-20 h-20 bg-white shadow-sm rounded-full flex items-center justify-center mx-auto mb-5"><LayoutDashboard size={32} className="text-slate-300" /></div><p className="text-slate-700 font-black text-xl">Nenhuma programação encontrada.</p><p className="text-slate-500 font-medium mt-2">Clique em "Nova Programação" para começar.</p></div>
         )}
       </div>
 
@@ -279,14 +246,8 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
           <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-200 border border-white">
             <h3 className="text-2xl font-black text-slate-800 mb-6 tracking-tight flex items-center gap-2"><Sparkles className="text-blue-500" /> {editingEvent ? 'Editar Programação' : 'Criar Programação'}</h3>
             <form onSubmit={handleSaveEvent} className="space-y-5">
-              <div>
-                <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Nome do Evento</label>
-                <input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Ex: Culto de Domingo" className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required autoFocus />
-              </div>
-              <div>
-                <label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Data</label>
-                <input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required />
-              </div>
+              <div><label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Nome do Evento</label><input type="text" value={formName} onChange={(e) => setFormName(e.target.value)} placeholder="Ex: Culto de Domingo" className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required autoFocus /></div>
+              <div><label className="block text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-2">Data</label><input type="date" value={formDate} onChange={(e) => setFormDate(e.target.value)} className="w-full px-5 py-4 rounded-2xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all text-slate-800 font-bold bg-slate-50 focus:bg-white" required /></div>
               <div className="flex gap-3 pt-5">
                 <button type="button" onClick={() => { setIsCreating(false); setEditingEvent(null); }} className="flex-1 px-4 py-4 bg-slate-100 text-slate-500 font-black rounded-2xl hover:bg-slate-200 transition-colors active:scale-95">Cancelar</button>
                 <button type="submit" className="flex-[2] px-4 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/30 active:scale-95">Salvar</button>
@@ -298,7 +259,7 @@ function EventsDashboard({ user, db, appId, onOpenEvent, showToast }) {
 
       {deletingEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in">
-          <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-sm shadow-2xl animate-in zoom-in-95 duration-200 text-center">
+          <div className="bg-white rounded-[3rem] p-8 md:p-10 w-full max-w-sm shadow-2xl animate-in zoom-in-95 duration-200 text-center">
             <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6"><AlertCircle size={40} /></div>
             <h3 className="text-2xl font-black text-slate-800 mb-2 tracking-tight">Excluir Evento?</h3>
             <p className="text-slate-500 font-medium mb-8">Esta ação removerá "{deletingEvent.name}" do painel.</p>
@@ -317,7 +278,8 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   const [activeTab, setActiveTab] = useState(event.isNew ? 'settings' : 'checkin');
   const [visitors, setVisitors] = useState([]);
   const [winners, setWinners] = useState([]);
-  const [config, setConfig] = useState({ rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false });
+  // Adicionado enablePhoto no state padrão
+  const [config, setConfig] = useState({ rule1Time: '09:10', rule1Weight: 2, rule2Time: '09:30', rule2Weight: 1, requireWhatsApp: false, enableClassification: false, enablePhoto: false });
   const [drawState, setDrawState] = useState({ isDrawing: false, winner: null, drawType: null });
 
   const [newName, setNewName] = useState('');
@@ -326,6 +288,9 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   const [isVisitor, setIsVisitor] = useState(false);
   const [whatsapp, setWhatsapp] = useState('');
   const [classification, setClassification] = useState('');
+  
+  // NOVO: Estado para armazenar a foto capturada
+  const [photoBase64, setPhotoBase64] = useState(null);
 
   useEffect(() => {
     if (!user || !event) return;
@@ -355,6 +320,34 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
 
   const timeToMinutes = (t) => { if(!t)return 0; const [h,m]=t.split(':').map(Number); return h*60+m; };
 
+  // --- ENGINE DE COMPRESSÃO DE FOTO ---
+  const handlePhotoCapture = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        // Redimensiona a foto para 250px de largura para ficar MUITO LEVE no banco de dados
+        const canvas = document.createElement('canvas');
+        const MAX_WIDTH = 250;
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+        
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Converte para JPEG otimizado
+        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+        setPhotoBase64(compressedBase64);
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleAddVisitor = async (e) => {
     e.preventDefault();
     if (!newName.trim() || !user) return;
@@ -375,10 +368,11 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
     const newVisitor = {
       name: newName.trim(), arrivalTime: finalTime, weight: weight, hasWon: false,
       timestamp: new Date().toISOString(), registeredBy: receptionistName, registeredById: user.uid,
-      isVisitor: isVisitor, whatsapp: needsWhatsapp ? whatsapp.trim() : '', classification: config.enableClassification ? classification : ''
+      isVisitor: isVisitor, whatsapp: needsWhatsapp ? whatsapp.trim() : '', classification: config.enableClassification ? classification : '',
+      photo: photoBase64 // Salva a foto se houver
     };
 
-    setNewName(''); setIsVisitor(false); setWhatsapp(''); setClassification('');
+    setNewName(''); setIsVisitor(false); setWhatsapp(''); setClassification(''); setPhotoBase64(null);
     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', `visitors_${event.id}`), newVisitor);
     showToast(`Registrado: ${newVisitor.name}`, 'success');
   };
@@ -453,13 +447,38 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
           </div>
 
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
+            {/* ================================================== */}
+            {/* ABA 1: CHECK-IN */}
+            {/* ================================================== */}
             {activeTab === 'checkin' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-6">
                   <div className="bg-white/90 backdrop-blur-md p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
                     <h2 className="text-2xl font-black text-slate-800 mb-8 flex items-center gap-4"><div className="bg-blue-100 text-blue-600 p-3.5 rounded-2xl shadow-inner"><UserPlus size={24} /></div>Novo Registro</h2>
                     <form onSubmit={handleAddVisitor} className="space-y-6">
-                      <div><input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full px-6 py-5 rounded-3xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all bg-slate-50 focus:bg-white text-xl" placeholder="Nome completo..." required /></div>
+                      
+                      {/* FOTO E NOME */}
+                      <div className="flex items-center gap-4">
+                        {config.enablePhoto && (
+                          <div className="relative shrink-0">
+                            {photoBase64 ? (
+                              <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl overflow-hidden border-2 border-blue-500 shadow-md group">
+                                <img src={photoBase64} alt="Foto" className="w-full h-full object-cover" />
+                                <button type="button" onClick={() => setPhotoBase64(null)} className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <X size={24} className="text-white" />
+                                </button>
+                              </div>
+                            ) : (
+                              <label className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-blue-50 border-2 border-dashed border-blue-200 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-all text-blue-500">
+                                <Camera size={24} />
+                                <input type="file" accept="image/*" capture="environment" onChange={handlePhotoCapture} className="hidden" />
+                              </label>
+                            )}
+                          </div>
+                        )}
+                        <input type="text" value={newName} onChange={(e) => setNewName(e.target.value)} className="w-full flex-1 px-6 py-5 rounded-3xl border-2 border-slate-100 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 outline-none text-slate-800 font-bold placeholder:text-slate-300 transition-all bg-slate-50 focus:bg-white text-xl" placeholder="Nome completo..." required />
+                      </div>
+
                       <div className="flex flex-col gap-4">
                         {config.enableClassification && (
                           <div className="relative animate-in fade-in slide-in-from-top-2 duration-300">
@@ -504,22 +523,31 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                       {visitors.map(v => (
                         <div key={v.id} className={`flex items-center justify-between p-4 rounded-3xl border-2 transition-all hover:scale-[1.01] ${v.hasWon ? 'bg-emerald-50/50 border-emerald-100' : 'bg-white border-slate-50 hover:border-slate-100 hover:shadow-sm'}`}>
                           <div className="flex items-center gap-4">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm ${v.hasWon ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>{v.name.charAt(0).toUpperCase()}</div>
+                            {/* Renderiza foto ou inicial */}
+                            {v.photo ? (
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm overflow-hidden border-2 ${v.hasWon ? 'border-emerald-300' : 'border-slate-200'}`}>
+                                <img src={v.photo} alt={v.name} className="w-full h-full object-cover" />
+                              </div>
+                            ) : (
+                              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shadow-sm ${v.hasWon ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                                {v.name.charAt(0).toUpperCase()}
+                              </div>
+                            )}
                             <div className="flex flex-col">
                               <span className="font-black text-slate-800 text-base flex items-center gap-2">{v.name} {v.hasWon && <Trophy size={16} className="text-emerald-500" />}</span>
                               <span className="text-xs text-slate-500 font-bold flex items-center gap-1.5 mt-1 uppercase tracking-wider"><Clock size={12} className="text-slate-300" /> {v.arrivalTime} <span className="text-slate-300">•</span> {v.registeredBy || 'Sis'}</span>
                               {(v.isVisitor || v.classification || v.whatsapp) && (
                                 <div className="flex flex-wrap gap-1.5 mt-2.5">
-                                  {v.isVisitor && <span className="text-[9px] bg-yellow-100 text-yellow-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-yellow-200">Visitante</span>}
+                                  {v.isVisitor && <span className="text-[9px] bg-yellow-100 text-yellow-700 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-yellow-200">Visitante</span>}
                                   {v.classification && <span className="text-[9px] bg-blue-100 text-blue-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest border border-blue-200">{v.classification}</span>}
-                                  {v.whatsapp && <span className="text-[9px] bg-emerald-100 text-emerald-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest flex items-center gap-1 border border-emerald-200"><MessageCircle size={10}/> WP Salvo</span>}
+                                  {v.whatsapp && <span className="text-[9px] bg-emerald-100 text-emerald-600 px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest flex items-center gap-1 border border-emerald-200"><MessageCircle size={10}/> WP</span>}
                                 </div>
                               )}
                             </div>
                           </div>
                           <div>
                             {v.hasWon ? <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 bg-emerald-100 border border-emerald-200 px-3 py-1.5 rounded-full shadow-sm">Ganhou</span> : 
-                             v.weight > 0 ? <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-full shadow-sm">{v.weight}x Chances</span> : 
+                             v.weight > 0 ? <span className="text-[10px] font-black uppercase tracking-widest text-blue-700 bg-blue-100 border border-blue-200 px-3 py-1.5 rounded-full shadow-sm">{v.weight}x</span> : 
                              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full shadow-sm">Geral</span>}
                           </div>
                         </div>
@@ -530,6 +558,9 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
               </div>
             )}
 
+            {/* ================================================== */}
+            {/* ABA 2: SORTEIOS */}
+            {/* ================================================== */}
             {activeTab === 'draw' && (
               <div className="space-y-8 max-w-4xl mx-auto">
                 <div className="bg-gradient-to-r from-blue-100 to-yellow-100 border border-white rounded-[2rem] p-6 flex flex-col md:flex-row items-center gap-5 shadow-xl shadow-blue-500/10">
@@ -556,7 +587,9 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                     <div className="space-y-4">
                       {winners.map((w, index) => (
                         <div key={w.id} className="flex items-center gap-5 p-5 rounded-3xl bg-white border-2 border-slate-100 hover:border-yellow-300 transition-colors shadow-sm">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-400 to-blue-300 text-blue-900 font-black text-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 border border-white/50">#{winners.length - index}</div>
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-yellow-400 to-blue-300 text-blue-900 font-black text-2xl flex items-center justify-center shadow-lg shadow-yellow-400/20 border border-white/50 overflow-hidden">
+                             {w.photo ? <img src={w.photo} alt="Winner" className="w-full h-full object-cover" /> : `#${winners.length - index}`}
+                          </div>
                           <div className="flex-1"><h4 className="font-black text-xl text-slate-800">{w.name}</h4><p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-1.5 flex items-center gap-2"><span className="bg-slate-100 px-2 py-0.5 rounded text-slate-500">{w.drawType === 'punctual' ? 'Pontualidade' : 'Geral'}</span><Clock size={12} /> {w.wonAt}</p></div>
                         </div>
                       ))}
@@ -566,6 +599,9 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
               </div>
             )}
 
+            {/* ================================================== */}
+            {/* ABA 3: AJUSTES E RELATÓRIOS */}
+            {/* ================================================== */}
             {activeTab === 'settings' && (
               <div className="space-y-8 max-w-3xl mx-auto">
                 <div className="bg-white/90 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-white">
@@ -588,6 +624,14 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
                     <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-sm sm:col-span-2">
                       <div className="font-black text-slate-800 mb-6 flex items-center gap-3 text-lg"><span className="w-4 h-4 rounded-full bg-emerald-400 shadow-sm"></span> Campos e Formulário</div>
                       <div className="grid sm:grid-cols-2 gap-6">
+                        {/* NOVO: Habilitar Foto */}
+                        <div className="flex items-center justify-between bg-white p-5 rounded-2xl border border-slate-100 shadow-sm sm:col-span-2">
+                          <div className="flex items-center gap-3">
+                            <div className="bg-blue-50 text-blue-500 p-2 rounded-xl"><ImageIcon size={20} /></div>
+                            <div><p className="font-black text-slate-800 text-sm">Capturar Foto do Visitante</p><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Exibe a foto no momento do sorteio no telão</p></div>
+                          </div>
+                          <button type="button" onClick={() => updateConfig('enablePhoto', !config.enablePhoto)} className={`${config.enablePhoto ? 'bg-blue-500' : 'bg-slate-300'} relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out shadow-inner`}><span className={`${config.enablePhoto ? 'translate-x-7' : 'translate-x-1'} inline-block h-6 w-6 mt-1 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out`} /></button>
+                        </div>
                         <div className="flex items-center justify-between bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
                           <div><p className="font-black text-slate-800 text-sm">Exigir WhatsApp</p><p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Para todos os registros</p></div>
                           <button type="button" onClick={() => updateConfig('requireWhatsApp', !config.requireWhatsApp)} className={`${config.requireWhatsApp ? 'bg-emerald-500' : 'bg-slate-300'} relative inline-flex h-8 w-14 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out shadow-inner`}><span className={`${config.requireWhatsApp ? 'translate-x-7' : 'translate-x-1'} inline-block h-6 w-6 mt-1 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out`} /></button>
@@ -627,20 +671,24 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   );
 }
 
+// --- CARROSSEL VIP COM FOTO ---
 function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventId }) {
   const [spinPhase, setSpinPhase] = useState('spinning');
   const trackRef = useRef(null);
   
-  const winnerName = drawState.winner?.name || 'Visitante';
   const slotCount = 45; 
   
+  // Agora o slotItems armazena o Objeto Inteiro (para termos nome e foto)
   const slotItems = useMemo(() => {
     let items = [];
-    const pool = visitors.length > 0 ? visitors.map(v => v.name) : ['Sorteado'];
-    for(let i=0; i < slotCount - 1; i++) items.push(pool[Math.floor(Math.random() * pool.length)]);
-    items.push(winnerName); 
+    const pool = visitors.length > 0 ? visitors : [{ name: 'Sorteado', photo: null }];
+    for(let i=0; i < slotCount - 1; i++) {
+      items.push(pool[Math.floor(Math.random() * pool.length)]);
+    }
+    // O último item é o vencedor de fato (com a foto dele do BD)
+    items.push(drawState.winner || { name: 'Visitante', photo: null }); 
     return items;
-  }, [winnerName, visitors]);
+  }, [drawState.winner, visitors]);
 
   useEffect(() => {
     const timerStop = setTimeout(() => {
@@ -710,12 +758,21 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
         </div>
         <div className="absolute left-1/2 z-10 w-full">
           <div ref={trackRef} className="flex items-center will-change-transform" style={{ marginLeft: '-9rem' }}>
-            {slotItems.map((name, i) => (
+            {slotItems.map((person, i) => (
               <div key={i} className="w-64 h-[22rem] flex-shrink-0 relative transition-all duration-500 transform" style={{ marginRight: '2rem' }}>
                 <div className={`w-full h-full rounded-[2.5rem] p-1.5 transition-all duration-700 ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-gradient-to-tr from-yellow-300 via-amber-400 to-yellow-500 shadow-[0_0_120px_rgba(251,191,36,0.5)] scale-110 z-50' : 'bg-white/10 border border-white/10 backdrop-blur-md opacity-40 scale-90'}`}>
                   <div className={`w-full h-full rounded-[2.2rem] flex flex-col items-center justify-center p-6 text-center shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-white' : 'bg-transparent'}`}>
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-inner ${i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-blue-100 text-blue-600' : 'bg-white/10 text-white/50'}`}><UserCircle2 size={32} /></div>
-                    <h3 className={`font-black leading-tight break-words w-full ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-slate-900 text-3xl md:text-4xl' : 'text-white text-2xl'}`}>{name}</h3>
+                    
+                    {/* Renderiza a Foto ou Ícone */}
+                    <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 shadow-inner overflow-hidden border-4 ${i === slotCount - 1 && spinPhase === 'stopped' ? 'border-yellow-400 bg-amber-100 text-amber-600' : 'border-white/20 bg-white/10 text-white/50'}`}>
+                      {person.photo ? (
+                        <img src={person.photo} alt="Membro" className="w-full h-full object-cover" />
+                      ) : (
+                        <UserCircle2 size={40} />
+                      )}
+                    </div>
+                    
+                    <h3 className={`font-black leading-tight break-words w-full ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-slate-900 text-3xl md:text-4xl' : 'text-white text-2xl'}`}>{person.name}</h3>
                     <div className="mt-auto pt-6 border-t-[3px] w-full border-dashed border-slate-300/30"><p className={`text-[10px] font-black uppercase tracking-widest ${i === slotCount - 1 && spinPhase === 'stopped' ? 'text-yellow-500' : 'text-white/30'}`}>TICKET VIP EXCLUSIVO</p></div>
                   </div>
                 </div>
