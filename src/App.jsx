@@ -305,6 +305,21 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
     return () => { unsubVis(); unsubWin(); unsubConf(); unsubDraw(); };
   }, [user, event.id]);
 
+  // --- SISTEMA DE AUTO-CURA DO SORTEIO ---
+  // Se o sorteio travar porque o usuário fechou o app no meio da animação,
+  // isso vai destravar sozinho para a próxima pessoa que entrar no card.
+  useEffect(() => {
+    if (drawState.isDrawing && drawState.timestamp) {
+      const timePassed = Date.now() - drawState.timestamp;
+      // Se passou mais de 20 segundos e a alavanca ainda está em ON, reseta ela
+      if (timePassed > 20000) {
+        updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'engines', `engine_${event.id}`), { 
+          isDrawing: false 
+        }).catch(console.error);
+      }
+    }
+  }, [drawState, db, appId, event.id]);
+
   useEffect(() => {
     if (!isAutoTime) return;
     const updateTime = () => {
@@ -420,9 +435,14 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
     showToast("Dados da sala excluídos.", "success");
   };
 
+  // Trava de segurança no Render da Animação
+  // Só exibe a animação do sorteio se o sinal for RECENTE (< 20s)
+  const isRecentDraw = drawState.isDrawing && drawState.winner && (Date.now() - drawState.timestamp < 20000);
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      {drawState.isDrawing && drawState.winner && (
+      
+      {isRecentDraw && (
         <VIPCardCarouselAnimation drawState={drawState} visitors={visitors} user={user} db={db} appId={appId} eventId={event.id} />
       )}
 
@@ -643,9 +663,6 @@ function EventWorkspace({ user, db, appId, event, receptionistName, showToast })
   );
 }
 
-// ==========================================
-// TELA 4: MOTOR DE ANIMAÇÃO VIP (ALINHAMENTO PREMIUM CORRIGIDO)
-// ==========================================
 function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventId }) {
   const [spinPhase, setSpinPhase] = useState('spinning');
   const trackRef = useRef(null);
@@ -746,7 +763,6 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
                     i === slotCount - 1 && spinPhase === 'stopped' ? 'bg-white' : 'bg-transparent'
                   }`}>
                     
-                    {/* CONTEÚDO CENTRALIZADO (FOTO + NOME) */}
                     <div className="flex-1 flex flex-col items-center justify-center w-full mt-2">
                       <div className={`w-28 h-28 md:w-32 md:h-32 rounded-full flex items-center justify-center mb-6 shadow-xl overflow-hidden border-4 transition-all duration-500 ${
                         i === slotCount - 1 && spinPhase === 'stopped' ? 'border-yellow-400 bg-amber-50 text-amber-600' : 'border-white/20 bg-white/10 text-white/50'
@@ -771,11 +787,9 @@ function VIPCardCarouselAnimation({ drawState, visitors, user, db, appId, eventI
                       )}
                     </div>
                     
-                    {/* TICKET RODAPÉ (COM FURINHOS E LINHA TRACEJADA) */}
                     <div className={`mt-4 pt-5 border-t-[3px] w-full border-dashed relative ${
                       i === slotCount - 1 && spinPhase === 'stopped' ? 'border-slate-200' : 'border-white/20'
                     }`}>
-                      {/* Efeito visual de picote de ingresso nas laterais */}
                       {i === slotCount - 1 && spinPhase === 'stopped' && (
                         <>
                           <div className="absolute -left-9 -top-[14px] w-6 h-6 bg-amber-400 rounded-full shadow-inner"></div>
